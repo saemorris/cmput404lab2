@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import socket, os, sys, errno
+import socket, os, sys, errno, select
 
 serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -75,3 +75,10 @@ while True:
 
 		if len(response) > 0:
 			print(response)
+
+		# means we won't be using 100% CPU all the time
+		select.select(
+			[incomingSocket, clientSocket], #read
+			[], #write
+			[incomingSocket, clientSocket], #exceptions
+			1.0) #timeout
